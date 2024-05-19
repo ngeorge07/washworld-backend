@@ -35,7 +35,7 @@ describe('Invoices (e2e)', () => {
       const validEntry = new CreateUserDto(
         'Jane Doe',
         'jane@email.com',
-        'password',
+        'Password1',
       );
 
       // ACT
@@ -59,6 +59,131 @@ describe('Invoices (e2e)', () => {
         .expect(404);
 
       expect(deleteResponse.body.message).toEqual('User with id 999 not found');
+    });
+  });
+
+  describe('Create User', () => {
+    it('should successfully create a new user with valid data', async () => {
+      const validEntry = new CreateUserDto(
+        'John Doe',
+        'john@email.com',
+        'Password1',
+      );
+
+      const response = await request(app.getHttpServer())
+        .post('/users')
+        .send(validEntry);
+
+      expect(response.body.fullName).toEqual('John Doe');
+      expect(response.body.id).toBeDefined();
+    });
+
+    it('should fail to create a new invoice with invalid data', async () => {
+      const invalidEntry = new CreateUserDto('John Doe', 'john', 'password');
+
+      const response = await request(app.getHttpServer())
+        .post('/users')
+        .send(invalidEntry)
+        .expect(400);
+
+      expect(response.body.message).toContain(
+        'Invalid email format. Please provide a valid email address.',
+      );
+      expect(response.body.message).toContain(
+        'Password must be at least 6 characters long and contain at least one uppercase letter and one number.',
+      );
+    });
+  });
+
+  describe('Update User', () => {
+    it('should successfully update an existing user', async () => {
+      const response = await request(app.getHttpServer()).get('/users');
+
+      const userId = response.body[0].id;
+      const updateDto = {
+        ...response.body[0],
+        email: 'doe@email.com',
+        password: 'Password2',
+        role: 'admin',
+      };
+
+      const updateResponse = await request(app.getHttpServer())
+        .put(`/users/${userId}`)
+        .send(updateDto)
+        .expect(200);
+
+      expect(updateResponse.body.id).toEqual(2);
+      expect(updateResponse.body.email).toEqual('doe@email.com');
+      expect(updateResponse.body.role).toEqual('admin');
+    });
+
+    it('should fail to update an existing user with invalid data', async () => {
+      const response = await request(app.getHttpServer()).get('/users');
+
+      const userId = response.body[0].id;
+      const updateDto = {
+        ...response.body[0],
+        email: 'doe',
+        password: 'Password',
+        role: 'root',
+      };
+
+      const updateResponse = await request(app.getHttpServer())
+        .put(`/users/${userId}`)
+        .send(updateDto)
+        .expect(400);
+
+      expect(updateResponse.body.message).toContain(
+        'Invalid email format. Please provide a valid email address.',
+      );
+      expect(updateResponse.body.message).toContain(
+        'Password must be at least 6 characters long and contain at least one uppercase letter and one number.',
+      );
+      expect(updateResponse.body.message).toContain(
+        'role must be one of the following values: user, admin',
+      );
+    });
+
+    it('should fail to update a non-existent user', async () => {
+      const updateDto = {
+        email: 'doe@email.com',
+        password: 'Password2',
+        role: 'admin',
+      };
+
+      const updateResponse = await request(app.getHttpServer())
+        .put(`/users/999`)
+        .send(updateDto)
+        .expect(404);
+
+      expect(updateResponse.body.message).toEqual('User with id 999 not found');
+    });
+  });
+
+  describe('Get All Users', () => {
+    it('should successfully retrieve all users', async () => {
+      const validEntry1 = new CreateUserDto(
+        'Jane Doe',
+        'jane@yahoo.com',
+        'Password123',
+      );
+      const validEntry2 = new CreateUserDto(
+        'George',
+        'admin@email.dk',
+        'SuperPassword1',
+      );
+
+      await request(app.getHttpServer()).post('/users').send(validEntry1);
+      await request(app.getHttpServer()).post('/users').send(validEntry2);
+
+      const response = await request(app.getHttpServer())
+        .get('/users')
+        .expect(200);
+
+      expect(response.body.length).toEqual(3);
+      expect(response.body[1].fullName).toEqual('Jane Doe');
+      expect(response.body[2].fullName).toEqual('George');
+      expect(response.body[2].email).toEqual('admin@email.dk');
     });
   });
 
