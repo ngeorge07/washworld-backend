@@ -4,10 +4,12 @@ import {
   IsEmail,
   IsOptional,
   IsEnum,
+  Validate,
 } from 'class-validator';
 import { Role } from '../entities/user.entity';
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateUserDto } from './create-user.dto';
+import { PasswordValidator } from './validators/PasswordValidator';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   constructor(
@@ -28,12 +30,21 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   fullName: string;
 
   @IsOptional()
-  @IsEmail()
+  @IsEmail(
+    {},
+    {
+      message: 'Invalid email format. Please provide a valid email address.',
+    },
+  )
   @IsString()
   email: string;
 
   @IsOptional()
   @IsString()
+  @Validate(PasswordValidator, {
+    message:
+      'Password must be at least 6 characters long and contain at least one uppercase letter and one number.',
+  })
   password: string;
 
   @IsOptional()

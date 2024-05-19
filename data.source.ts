@@ -26,7 +26,7 @@ export const dbConfig_test: TypeOrmModuleOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.TEST_DB_NAME,
   synchronize: true,
-  entities: ['dist/**/*.entity{.ts,.js}'],
+  entities: ['src/**/*.entity{.ts,.js}'],
   migrations: ['dist/src/migrations/*{.ts,.js}'],
 };
 
