@@ -1,12 +1,11 @@
-import * as request from 'supertest';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { dbConfig_test } from '../data.source';
-import { EntityManager } from 'typeorm';
-import { ValidationPipe } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserModule } from 'src/user/user.module';
+import * as request from 'supertest';
+import { EntityManager } from 'typeorm';
+import { dbConfig_test } from '../data.source';
 
 describe('Invoices (e2e)', () => {
   let app: INestApplication;

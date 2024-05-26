@@ -1,16 +1,18 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
   BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
-import { UserService } from './user.service';
+import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
@@ -32,6 +34,7 @@ export class UserController {
     return this.userService.findOneUser(+id);
   }
 
+  @UseGuards(AuthGuard)
   @Put(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     this.checkId(id);

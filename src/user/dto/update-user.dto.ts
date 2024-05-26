@@ -1,13 +1,13 @@
+import { PartialType } from '@nestjs/mapped-types';
 import {
-  IsString,
-  IsNotEmpty,
   IsEmail,
-  IsOptional,
   IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
   Validate,
 } from 'class-validator';
 import { Role } from '../entities/user.entity';
-import { PartialType } from '@nestjs/mapped-types';
 import { CreateUserDto } from './create-user.dto';
 import { PasswordValidator } from './validators/PasswordValidator';
 
