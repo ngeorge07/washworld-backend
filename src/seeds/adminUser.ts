@@ -1,6 +1,7 @@
-import 'dotenv/config';
+import * as dotenv from 'dotenv';
 import { Role } from 'src/enums/role.enum';
 import { DataSource } from 'typeorm';
+dotenv.config();
 
 const adminSeed = {
   fullName: 'Admin',
