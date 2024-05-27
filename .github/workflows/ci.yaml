@@ -45,3 +45,4 @@ jobs:
         env:
           DATABASE_URL: postgres://testuser:testpassword@localhost:5432/testdb
           TEST_DATABASE_URL: postgres://testuser:testpassword@localhost:5432/testdb
+          JWT_SECRET: 'd95d5cbf7542bb9c2a7ef347703a3c6dba2bdd57887951987379c872261781bc435763a65af83fc8be489b772a2e32b51f4c58628127248eeed317482e4a08ea'
