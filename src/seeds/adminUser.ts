@@ -4,7 +4,7 @@ import { DataSource } from 'typeorm';
 
 const adminSeed = {
   fullName: 'Admin',
-  email: 'admin@emial.com',
+  email: 'admin@email.com',
   password: 'admin',
   roles: [Role.ADMIN],
 };
