@@ -1,13 +1,15 @@
 import { PartialType } from '@nestjs/mapped-types';
 import {
+  ArrayMinSize,
+  ArrayUnique,
+  IsArray,
   IsEmail,
   IsEnum,
-  IsNotEmpty,
   IsOptional,
   IsString,
   Validate,
 } from 'class-validator';
-import { Role } from '../entities/user.entity';
+import { Role } from 'src/enums/role.enum';
 import { CreateUserDto } from './create-user.dto';
 import { PasswordValidator } from './validators/PasswordValidator';
 
@@ -16,13 +18,13 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     fullName?: string,
     email?: string,
     password?: string,
-    role?: Role,
+    roles?: Role[],
   ) {
     super();
     this.fullName = fullName;
     this.email = email;
     this.password = password;
-    this.role = role;
+    this.roles = roles;
   }
 
   @IsOptional()
@@ -48,7 +50,9 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   password: string;
 
   @IsOptional()
-  @IsEnum(Role)
-  @IsNotEmpty()
-  role: Role;
+  @IsArray()
+  @ArrayUnique()
+  @IsEnum(Role, { each: true })
+  @ArrayMinSize(1)
+  roles: Role[];
 }
