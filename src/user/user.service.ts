@@ -1,12 +1,12 @@
 import {
-  BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { DeleteResult, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class UserService {
     });
 
     if (user) {
-      throw new BadRequestException('This email is already registered');
+      throw new ConflictException('Email already registered');
     }
 
     const newUser = this.userRepository.create(createUserDto);
@@ -57,6 +57,11 @@ export class UserService {
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
+
+    if (user.email === updateUserDto.email) {
+      throw new ConflictException('Email already registered');
+    }
+
     const updatedUser = this.userRepository.create({
       ...user,
       ...updateUserDto,

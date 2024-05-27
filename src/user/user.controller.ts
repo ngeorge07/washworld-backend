@@ -1,16 +1,22 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
   BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
-import { UserService } from './user.service';
+import { Role } from 'src/enums/role.enum';
+import { AuthGuard } from 'src/gurads/auth.guard';
+import { RolesGuard } from 'src/gurads/roles.guard';
+import { UpdateUserGuard } from 'src/gurads/update.guard';
+import { Roles } from '../decorators/roles.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
@@ -32,6 +38,7 @@ export class UserController {
     return this.userService.findOneUser(+id);
   }
 
+  @UseGuards(AuthGuard, UpdateUserGuard)
   @Put(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     this.checkId(id);
@@ -39,6 +46,8 @@ export class UserController {
   }
 
   @Delete(':id')
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   remove(@Param('id') id: string) {
     this.checkId(id);
     return this.userService.removeUser(+id);

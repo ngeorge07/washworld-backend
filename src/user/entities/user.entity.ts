@@ -1,3 +1,5 @@
+import * as bcrypt from 'bcrypt';
+import { Role } from 'src/enums/role.enum';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -5,12 +7,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import * as bcrypt from 'bcrypt';
-
-export enum Role {
-  USER = 'user',
-  ADMIN = 'admin',
-}
 
 @Entity('users')
 export class User {
@@ -26,12 +22,24 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ type: 'enum', enum: Role, default: Role.USER })
-  role: Role;
+  @Column('text', { array: true, default: () => "ARRAY['user']::text[]" })
+  roles: string[];
 
   @BeforeUpdate()
   @BeforeInsert()
   hashPassword(): void {
-    this.password = bcrypt.hashSync(this.password, 10);
+    if (this.password) {
+      this.password = bcrypt.hashSync(this.password, 10);
+    }
+  }
+
+  @BeforeUpdate()
+  convertRoles(): Role[] {
+    if (this.roles) {
+      const convertedRoles = this.roles.map(
+        (role) => Role[role as keyof typeof Role],
+      );
+      return convertedRoles;
+    }
   }
 }
