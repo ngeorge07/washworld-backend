@@ -28,14 +28,18 @@ export class User {
   @BeforeUpdate()
   @BeforeInsert()
   hashPassword(): void {
-    this.password = bcrypt.hashSync(this.password, 10);
+    if (this.password) {
+      this.password = bcrypt.hashSync(this.password, 10);
+    }
   }
 
   @BeforeUpdate()
   convertRoles(): Role[] {
-    const convertedRoles = this.roles.map(
-      (role) => Role[role as keyof typeof Role],
-    );
-    return convertedRoles;
+    if (this.roles) {
+      const convertedRoles = this.roles.map(
+        (role) => Role[role as keyof typeof Role],
+      );
+      return convertedRoles;
+    }
   }
 }
