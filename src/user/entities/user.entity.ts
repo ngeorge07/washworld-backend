@@ -1,10 +1,12 @@
 import * as bcrypt from 'bcrypt';
+import { Car } from 'src/car/entities/car.entity';
 import { Role } from 'src/enums/role.enum';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -24,6 +26,12 @@ export class User {
 
   @Column('text', { array: true, default: () => "ARRAY['user']::text[]" })
   roles: string[];
+
+  @OneToMany(() => Car, (car) => car.user)
+  cars: Car[];
+
+  @Column({ default: 100 })
+  washCoins: number;
 
   @BeforeUpdate()
   @BeforeInsert()
