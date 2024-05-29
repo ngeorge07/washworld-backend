@@ -30,6 +30,7 @@ export class AuthService {
       sub: foundUser.id,
       fullName: foundUser.fullName,
       roles: foundUser.roles,
+      washCoins: foundUser.washCoins,
     };
     return {
       access_token: await this.jwtService.signAsync(payload),

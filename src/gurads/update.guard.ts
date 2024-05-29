@@ -23,7 +23,7 @@ export class UpdateUserGuard implements CanActivate {
     if (!user.roles.includes('admin')) {
       if (
         user.sub !== +params.id ||
-        body.washCoins ||
+        (body.washCoins && body.washCoins !== user.washCoins) ||
         (body.roles && body.roles.includes('admin'))
       )
         throw new ForbiddenException(
