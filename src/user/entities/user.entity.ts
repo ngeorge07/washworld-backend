@@ -1,6 +1,5 @@
 import * as bcrypt from 'bcrypt';
 import { Car } from 'src/car/entities/car.entity';
-import { Role } from 'src/enums/role.enum';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -38,16 +37,6 @@ export class User {
   hashPassword(): void {
     if (this.password) {
       this.password = bcrypt.hashSync(this.password, 10);
-    }
-  }
-
-  @BeforeUpdate()
-  convertRoles(): Role[] {
-    if (this.roles) {
-      const convertedRoles = this.roles.map(
-        (role) => Role[role as keyof typeof Role],
-      );
-      return convertedRoles;
     }
   }
 }

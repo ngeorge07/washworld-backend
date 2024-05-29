@@ -10,7 +10,6 @@ import {
   IsString,
   Validate,
 } from 'class-validator';
-import { Car } from 'src/car/entities/car.entity';
 import { Role } from 'src/enums/role.enum';
 import { CreateUserDto } from './create-user.dto';
 import { PasswordValidator } from './validators/PasswordValidator';
@@ -21,7 +20,6 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     email?: string,
     password?: string,
     roles?: Role[],
-    cars?: Car[],
     washCoins?: number,
   ) {
     super();
@@ -29,7 +27,6 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     this.email = email;
     this.password = password;
     this.roles = roles;
-    this.cars = cars;
     this.washCoins = washCoins;
   }
 
@@ -54,9 +51,6 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
       'Password must be at least 6 characters long and contain at least one uppercase letter and one number.',
   })
   password: string;
-
-  @IsOptional()
-  cars: Car[];
 
   @IsOptional()
   @IsInt()
