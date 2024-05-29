@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { CarModule } from './car/car.module';
+import { PackageModule } from './package/package.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CarModule } from './car/car.module';
     AuthModule,
     SubscriptionModule,
     CarModule,
+    PackageModule,
   ],
   controllers: [],
 })

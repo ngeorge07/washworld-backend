@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CarService } from 'src/car/car.service';
+import { PackageService } from 'src/package/package.service';
 import { Repository } from 'typeorm';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
@@ -11,10 +12,19 @@ export class SubscriptionService {
   constructor(
     @InjectRepository(Subscription)
     private readonly subscriptionRepository: Repository<Subscription>,
+    private readonly packageService: PackageService,
     private readonly carService: CarService,
   ) {}
 
   async createSubscription(createSubscriptionDto: CreateSubscriptionDto) {
+    const foundPackage = await this.packageService.findOnePackage(
+      createSubscriptionDto.packageId,
+    );
+
+    if (!foundPackage) {
+      throw new NotFoundException('Package not found');
+    }
+
     const car = await this.carService.findOneCar(createSubscriptionDto.carId);
     if (!car) {
       throw new NotFoundException('Car not found');
@@ -22,18 +32,20 @@ export class SubscriptionService {
 
     const newSubscription = this.subscriptionRepository.create({
       ...createSubscriptionDto,
+      package: foundPackage,
       car,
     });
     return await this.subscriptionRepository.save(newSubscription);
   }
 
   findAllSubscriptions() {
-    return this.subscriptionRepository.find();
+    return this.subscriptionRepository.find({ relations: ['package'] });
   }
 
   async findOneSubscription(id: number) {
-    const foundSubscription = await this.subscriptionRepository.findOneBy({
-      id,
+    const foundSubscription = await this.subscriptionRepository.findOne({
+      where: { id },
+      relations: ['package'],
     });
     if (!foundSubscription) {
       throw new NotFoundException('Subscription not found');
@@ -44,7 +56,7 @@ export class SubscriptionService {
   async findAllSubscriptionsByUserId(userId: number) {
     const foundSubscriptions = await this.subscriptionRepository.find({
       where: { car: { user: { id: userId } } },
-      relations: ['car', 'car.user'],
+      relations: ['package', 'car', 'car.user'],
     });
     return foundSubscriptions;
   }
@@ -52,7 +64,7 @@ export class SubscriptionService {
   async findSubscriptionByCarId(carId: number) {
     const foundSubscription = await this.subscriptionRepository.findOne({
       where: { car: { id: carId } },
-      relations: ['car', 'car.user'],
+      relations: ['package', 'car', 'car.user'],
     });
     return foundSubscription;
   }
@@ -61,11 +73,22 @@ export class SubscriptionService {
     id: number,
     updateSubscriptionDto: UpdateSubscriptionDto,
   ) {
-    const foundSubscription = await this.subscriptionRepository.findOneBy({
-      id,
+    const foundSubscription = await this.subscriptionRepository.findOne({
+      where: { id },
+      relations: ['package', 'car'],
     });
     if (!foundSubscription) {
       throw new NotFoundException('Subscription not found');
+    }
+
+    if (updateSubscriptionDto.packageId) {
+      const foundPackage = await this.packageService.findOnePackage(
+        updateSubscriptionDto.packageId,
+      );
+      if (!foundPackage) {
+        throw new NotFoundException('Package not found');
+      }
+      foundSubscription.package = foundPackage;
     }
 
     if (updateSubscriptionDto.isActive !== undefined) {
