@@ -1,9 +1,11 @@
 import { Car } from 'src/car/entities/car.entity';
+import { Package } from 'src/package/entities/package.entity';
 import {
   BeforeInsert,
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -26,9 +28,9 @@ export class Subscription {
   @JoinColumn({ name: 'carId' })
   car: Car;
 
-  // @ManyToOne(() => Package, { nullable: false })
-  // @JoinColumn({ name: 'packageId' })
-  // package: Package;
+  @ManyToOne(() => Package, { nullable: false })
+  @JoinColumn({ name: 'packageId' })
+  package: Package;
 
   @BeforeInsert()
   setExpiresAt() {
