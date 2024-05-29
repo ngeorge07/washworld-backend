@@ -1,4 +1,16 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateSubscriptionDto } from './create-subscription.dto';
+import { IsBoolean, IsDate, IsOptional } from 'class-validator';
 
-export class UpdateSubscriptionDto extends PartialType(CreateSubscriptionDto) {}
+export class UpdateSubscriptionDto {
+  constructor(isActive?: boolean, expiresAt?: Date) {
+    this.isActive = isActive;
+    this.expiresAt = expiresAt;
+  }
+
+  @IsOptional()
+  @IsBoolean()
+  isActive: boolean;
+
+  @IsOptional()
+  @IsDate()
+  expiresAt: Date;
+}

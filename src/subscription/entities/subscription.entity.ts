@@ -1,6 +1,14 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Car } from 'src/car/entities/car.entity';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Entity()
+@Entity('scubscriptions')
 export class Subscription {
   @PrimaryGeneratedColumn()
   id: number;
@@ -14,11 +22,18 @@ export class Subscription {
   @Column()
   expiresAt: Date;
 
-  @Column({ type: 'int' })
-  washCoinsAwarded: number;
+  @OneToOne(() => Car, { nullable: false })
+  @JoinColumn({ name: 'carId' })
+  car: Car;
+
+  // @ManyToOne(() => Package, { nullable: false })
+  // @JoinColumn({ name: 'packageId' })
+  // package: Package;
 
   @BeforeInsert()
   setExpiresAt() {
-    this.expiresAt.setMonth(this.createdAt.getMonth() + 1);
+    const currentDate = new Date();
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    this.expiresAt = currentDate;
   }
 }
