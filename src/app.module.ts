@@ -5,6 +5,7 @@ import { dbConfig } from '../data.source';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { SubscriptionModule } from './subscription/subscription.module';
+import { CarModule } from './car/car.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { SubscriptionModule } from './subscription/subscription.module';
     UserModule,
     AuthModule,
     SubscriptionModule,
+    CarModule,
   ],
   controllers: [],
 })
