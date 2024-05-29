@@ -17,16 +17,16 @@ export class UserService {
   ) {}
 
   async createUser(createUserDto: CreateUserDto) {
-    const user = await this.userRepository.findOneBy({
-      email: createUserDto.email,
-    });
-
-    if (user) {
-      throw new ConflictException('Email already registered');
-    }
-
     const newUser = this.userRepository.create(createUserDto);
-    return this.userRepository.save(newUser);
+    try {
+      return await this.userRepository.save(newUser);
+    } catch (error) {
+      if (error.code === '23505') {
+        // 23505 is the code for unique_violation in PostgreSQL
+        throw new ConflictException('Email already registered');
+      }
+      throw error;
+    }
   }
 
   async findAllUsers(): Promise<User[]> {
