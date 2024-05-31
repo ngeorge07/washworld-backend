@@ -24,7 +24,8 @@
     "migration:revert": "npm run typeorm -- migration:revert",
     "migration:show": "npm run typeorm -- migration:show",
     "db:seed:adminUser": "ts-node -r tsconfig-paths/register ./src/seeds/adminUser.ts",
-    "db:seed": "npm run db:seed:adminUser"
+    "db:seed:packages": "ts-node -r tsconfig-paths/register ./src/seeds/packages.ts",
+    "db:seed": "npm run db:seed:adminUser && npm run db:seed:packages"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

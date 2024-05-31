@@ -14,21 +14,48 @@
    cd washworld-backend
    ```
 
-3. **Start PostgreSQL with Docker:**
+3. **Create a .env file in the root directory of the project with the following content:**
+
+   ```env
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_USERNAME=<your_postgres_username>
+   DB_PASSWORD=<your_postgres_password>
+   DB_NAME=<your_database_name>
+   DATABASE_URL="postgres://<DB_USERNAME>:<DB_PASSWORD>@localhost:5432/<DB_NAME>"
+   JWT_SECRET=<your-secret>
+   TEST_DB_NAME='e2e_test'
+   TEST_DATABASE_URL="postgres://<DB_USERNAME>:<DB_PASSWORD>@localhost:5432/<TEST_DB_NAME>"
+   ```
+
+   You can generate a JWT secret by running this command in your terminal:
+
+   ```bash
+   node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+   ```
+
+4. **Start PostgreSQL with Docker:**
 
    ```bash
    docker-compose -p washworld-postgres up -d
    ```
 
-4. **Install dependencies**
+5. **Install dependencies**
 
    ```bash
    npm install
    ```
 
-5. **Run migrations**
+6. **Run migrations**
+
    ```bash
    npm run migration:run
+   ```
+
+7. **Run the seeds:**
+
+   ```bash
+   npm run db:seed
    ```
 
 ## Running the app
