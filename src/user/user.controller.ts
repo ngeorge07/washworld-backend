@@ -26,12 +26,13 @@ export class UserController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
   }
-
+  @UseGuards(AuthGuard)
   @Get()
   findAll() {
     return this.userService.findAllUsers();
   }
 
+  @UseGuards(AuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     this.checkId(id);
