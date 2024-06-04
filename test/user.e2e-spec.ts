@@ -124,6 +124,7 @@ describe('Invoices (e2e)', () => {
 
       const response = await request(app.getHttpServer())
         .get('/users/4')
+        .auth(user_token, { type: 'bearer' })
         .expect(404);
       expect(response.body.message).toEqual('User with id 4 not found');
     });
@@ -151,7 +152,9 @@ describe('Invoices (e2e)', () => {
 
   describe('Update User', () => {
     it('Admin should successfully update any existing user', async () => {
-      const response = await request(app.getHttpServer()).get('/users');
+      const response = await request(app.getHttpServer())
+        .get('/users')
+        .auth(user_token, { type: 'bearer' });
 
       const userId = response.body[2].id;
 
@@ -294,6 +297,7 @@ describe('Invoices (e2e)', () => {
 
       const response = await request(app.getHttpServer())
         .get('/users')
+        .auth(user_token, { type: 'bearer' })
         .expect(200);
 
       expect(response.body.length).toEqual(5);
