@@ -28,7 +28,7 @@ export class Subscription {
   @JoinColumn({ name: 'carId' })
   car: Car;
 
-  @ManyToOne(() => Package, { nullable: false })
+  @ManyToOne(() => Package, { nullable: false, eager: true })
   @JoinColumn({ name: 'packageId' })
   package: Package;
 
